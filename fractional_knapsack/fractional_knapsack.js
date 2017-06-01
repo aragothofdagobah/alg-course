@@ -13,14 +13,18 @@ rl.setPrompt('')
       supplies = supplies.sort(comp);
       var i = 0;
       var t = 0;
+      //console.log(supplies);
       while (capacity > 0) {
-        if(supplies[i].weight <= capacity){
-           t += supplies[i].value;
-           capacity = capacity - supplies[i].weight;
+        if(i == supplies.length){
+          return t;
+        }
+        if(supplies[i][1] <= capacity){
+           t += supplies[i][0];
+           capacity = capacity - supplies[i][1];
            i++;
         }
         else{
-          t += capacity/supplies[i].weight * supplies[i].value;
+          t += capacity/supplies[i][1] * supplies[i][0];
           capacity = 0;
         }
       }
@@ -28,40 +32,59 @@ rl.setPrompt('')
  }
 
 function comp(a,b) {
-  var wvA = a.value / a.weight;
-  var wvB = b.value / b.weight;
-
-  return wvB - wvA;
-}
-
-rl.prompt();
-var count = 0
-var arr = [];
-var num = 0;
-var cap = 0;
-rl.on('line',(line) =>{
-  if(count == 0){
-    num = parseInt(line.split(' ')[0]);
-    cap = parseInt(line.split(' ')[1]);
-    count++;
-    //rl.prompt();
-  }
-  else if (count < num) {
-    var Obj = new Object();
-    Obj.value = parseInt(line.split(' ')[0]);
-    Obj.weight = parseInt(line.split(' ')[1])
-    arr.push(Obj);
-    count++;
+  vwA = a[0] / a[1];
+  vwB = b[0] / b[1];
+  if(vwA == vwB){
+    return 0;
   }
   else {
-    var Obj = new Object();
-    Obj.value = parseInt(line.split(' ')[0]);
-    Obj.weight = parseInt(line.split(' ')[1])
-    arr.push(Obj);
-    rl.close()
+    return (vwA < vwB) ? 1 : -1;
   }
-})
+}
 
-rl.on('close', () => {
-  console.log(knapsack(cap, arr));
-})
+function strsToInts(strs) {
+  return strs.map((str) => {
+    const int = parseFloat(str, 10);
+
+    if (isNaN(int)) {
+      throw new Error('stdin contains data that is not a number');
+    }
+
+    return int;
+  });
+}
+
+
+function parseMultiLines(numLines, cb) {
+  let linesNum = numLines;
+  const rl = readline.createInterface({
+    input: process.stdin,
+    terminal: false,
+  });
+
+  const lines = [];
+  rl.on('line', (line) => {
+    if (line !== '\n') {
+      const strs = line.toString().split(' ');
+      const input = strsToInts(strs);
+
+      if (linesNum === null && lines.length === 0) {
+        linesNum = input[0] + 1;
+      }
+
+      lines.push(input);
+    }
+
+    if (lines.length === linesNum) {
+      cb(lines);
+      process.exit();
+    }
+  });
+}
+
+parseMultiLines(null, (input) => {
+  var items = input.slice();
+  const params = items.shift();
+  const capacity = params.pop();
+  console.log(knapsack(capacity, items));
+});
