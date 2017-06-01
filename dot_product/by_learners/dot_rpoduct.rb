@@ -2,12 +2,16 @@
 # by Andronik Ordian
 
 def max_dot_product(a, b)
-  #write your code here
+  a = a.sort;
+  b = b.sort;
+  sum = 0;
+  for i in 0..a.length-1
+    sum += a[i] * b[i]
+  end
+  return sum
 end
 
-if __FILE__ == $0
-  data = STDIN.read.split().map(&:to_i)
-  n = data[0]  
-  a, b = data[1..n], data[n+1..2*n]
-  puts "#{min_dot_product(a, b)}"
-end
+num = STDIN.gets.chomp();
+a = STDIN.gets.chomp().split(' ').map { |e| e.to_i }
+b = STDIN.gets.chomp().split(' ').map { |e| e.to_i }
+puts "#{max_dot_product(a, b)}"

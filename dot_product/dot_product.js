@@ -15,6 +15,8 @@ function dot(num, a, b) {
   }
   a = a.sort();
   b = b.sort();
+  console.log(a);
+  console.log(b);
   var sum = 0;
   for(var x = 0; x < num; x++){
     sum += a[x] * b[x];
